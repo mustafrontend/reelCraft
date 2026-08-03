@@ -1,0 +1,6 @@
+{
+  "appId": "com.necoai.reelcraft",
+  "appName": "ReelCraft AI",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
