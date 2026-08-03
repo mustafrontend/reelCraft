@@ -184,8 +184,8 @@ export default function AppLayout() {
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-slate-500 font-medium">© 2026 ReelCraft AI. Tüm hakları saklıdır.</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-sm text-slate-500 hover:text-slate-900 font-medium">{t('footer.privacy')}</a>
-            <a href="#" className="text-sm text-slate-500 hover:text-slate-900 font-medium">{t('footer.terms')}</a>
+            <Link to="/privacy" className="text-sm text-slate-500 hover:text-slate-900 font-medium">{t('footer.privacy')}</Link>
+            <Link to="/terms" className="text-sm text-slate-500 hover:text-slate-900 font-medium">{t('footer.terms')}</Link>
           </div>
         </div>
       </footer>

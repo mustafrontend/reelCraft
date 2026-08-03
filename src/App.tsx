@@ -3,6 +3,7 @@ import LandingPage from '@/pages/LandingPage'
 import Studio from '@/pages/Studio'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
+import PrivacyPolicy from '@/pages/PrivacyPolicy'
 import AppLayout from '@/components/layout/AppLayout'
 
 function App() {
@@ -14,6 +15,8 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/studio" element={<Studio />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<PrivacyPolicy />} />
         </Route>
       </Routes>
     </BrowserRouter>
