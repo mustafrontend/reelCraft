@@ -33,6 +33,10 @@ workflows:
             --create
           keychain add-certificates
           xcode-project use-profiles
+      - name: Set unique build number
+        script: |
+          cd ios/App
+          agvtool new-version -all $(date +%s)
       - name: Build & export signed IPA
         script: |
           xcode-project build-ipa \
