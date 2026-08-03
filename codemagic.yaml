@@ -19,8 +19,9 @@ workflows:
         script: |
           npm run build
           npx cap sync ios
-      - name: Set up code signing
+      - name: Fetch and generate Apple signing profiles automatically
         script: |
+          app-store-connect fetch-signing-files "com.necoai.reelcraft" --type IOS_APP_STORE --create
           xcode-project use-profiles
       - name: Build iOS Xcode App & Export IPA
         script: |
