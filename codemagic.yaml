@@ -6,7 +6,6 @@ workflows:
     environment:
       node: latest
       xcode: latest
-      cocoapods: default
     scripts:
       - name: Install Node.js dependencies
         script: |
@@ -18,8 +17,7 @@ workflows:
       - name: Build iOS Xcode App
         script: |
           cd ios/App
-          pod install
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release archive -archivePath $HOME/build/App.xcarchive CODE_SIGNING_ALLOWED=NO
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release archive -archivePath $HOME/build/App.xcarchive CODE_SIGNING_ALLOWED=NO
     artifacts:
       - $HOME/build/*.xcarchive
       - $HOME/build/**/*.ipa
