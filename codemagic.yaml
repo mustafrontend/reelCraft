@@ -11,6 +11,9 @@ workflows:
         bundle_identifier: com.necoai.reelcraft
       node: latest
       xcode: latest
+      vars:
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
+        XCODE_SCHEME: "App"
     scripts:
       - name: Install Node.js dependencies
         script: |
@@ -22,12 +25,14 @@ workflows:
       - name: Set up code signing
         script: |
           xcode-project use-profiles
-      - name: Build iOS Xcode App
+      - name: Build & export signed IPA
         script: |
-          cd ios/App
-          xcodebuild -project App.xcodeproj -scheme App -archivePath $HOME/build/App.xcarchive archive
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
     artifacts:
-      - $HOME/build/*.xcarchive
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:
         auth: integration
