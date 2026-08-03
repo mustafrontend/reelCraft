@@ -6,6 +6,9 @@ workflows:
     integrations:
       app_store_connect: app_store_connect
     environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.necoai.reelcraft
       node: latest
       xcode: latest
     scripts:
@@ -16,13 +19,17 @@ workflows:
         script: |
           npm run build
           npx cap sync ios
-      - name: Build iOS Xcode App
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
+      - name: Build iOS Xcode App & Export IPA
         script: |
           cd ios/App
-          xcodebuild -project App.xcodeproj -scheme App -configuration Release archive -archivePath $HOME/build/App.xcarchive CODE_SIGNING_ALLOWED=NO
+          xcodebuild -project App.xcodeproj -scheme App -archivePath $HOME/build/App.xcarchive archive
+          xcodebuild -exportArchive -archivePath $HOME/build/App.xcarchive -exportOptionsPlist /Users/builder/export_options.plist -exportPath $HOME/build
     artifacts:
+      - $HOME/build/*.ipa
       - $HOME/build/*.xcarchive
-      - $HOME/build/**/*.ipa
     publishing:
       app_store_connect:
         auth: integration
