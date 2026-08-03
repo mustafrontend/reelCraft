@@ -6,8 +6,9 @@ workflows:
     integrations:
       app_store_connect: reelcraft
     environment:
-      groups:
-        - appstore_credentials
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.necoai.reelcraft
       node: latest
       xcode: latest
     scripts:
@@ -20,17 +21,13 @@ workflows:
           npx cap sync ios
       - name: Set up code signing
         script: |
-          keychain initialize
-          app-store-connect fetch-signing-files "com.necoai.reelcraft" --type IOS_APP_STORE --certificate-key @env:CERTIFICATE_PRIVATE_KEY --create || true
-          keychain add-certificates || true
-          xcode-project use-profiles || true
+          xcode-project use-profiles
       - name: Build iOS Xcode App
         script: |
           cd ios/App
-          xcodebuild -project App.xcodeproj -scheme App -archivePath $HOME/build/App.xcarchive archive CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          xcodebuild -project App.xcodeproj -scheme App -archivePath $HOME/build/App.xcarchive archive
     artifacts:
       - $HOME/build/*.xcarchive
-      - $HOME/build/**/*.ipa
     publishing:
       app_store_connect:
         auth: integration
