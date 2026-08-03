@@ -3,8 +3,6 @@ workflows:
     name: ReelCraft AI iOS App Store Release
     max_build_duration: 60
     instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: app_store_connect
     environment:
       node: latest
       xcode: latest
@@ -16,10 +14,6 @@ workflows:
         script: |
           npm run build
           npx cap sync ios
-      - name: Fetch Apple signing files
-        script: |
-          app-store-connect fetch-signing-files "com.necoai.reelcraft" --type IOS_APP_STORE --create || true
-          xcode-project use-profiles || true
       - name: Build iOS Xcode App
         script: |
           cd ios/App
@@ -27,7 +21,3 @@ workflows:
     artifacts:
       - $HOME/build/*.xcarchive
       - $HOME/build/**/*.ipa
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
