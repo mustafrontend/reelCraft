@@ -22,12 +22,20 @@ workflows:
           npx cap sync ios
       - name: Set up code signing
         script: |
+          set -e
           keychain initialize
+          echo "=== Fetching signing files for $BUNDLE_ID ==="
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
-            --create
+            --create \
+            --verbose
+          echo "=== Certificates in keychain ==="
           keychain add-certificates
-          xcode-project use-profiles
+          keychain list-certificates || true
+          echo "=== Provisioning profiles downloaded ==="
+          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles/" || echo "NO PROFILES DIRECTORY"
+          echo "=== Applying profiles to project ==="
+          xcode-project use-profiles --verbose
       - name: Set build number
         script: |
           cd ios/App
