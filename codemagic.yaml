@@ -8,6 +8,10 @@ workflows:
     environment:
       node: latest
       xcode: latest
+      vars:
+        BUNDLE_ID: "com.necoai.reelcraft"
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
+        XCODE_SCHEME: "App"
     scripts:
       - name: Install Node.js dependencies
         script: |
@@ -19,15 +23,23 @@ workflows:
       - name: Set up code signing
         script: |
           keychain initialize
-          app-store-connect fetch-signing-files "com.necoai.reelcraft" --type IOS_APP_STORE --create || true
-          keychain add-certificates || true
-          xcode-project use-profiles || true
-      - name: Build iOS Xcode Archive
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
+      - name: Set build number
         script: |
           cd ios/App
-          xcodebuild -project App.xcodeproj -scheme App -archivePath $HOME/build/App.xcarchive archive CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          agvtool new-version -all $(($(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null || echo 0) + 1))
+      - name: Build & export signed IPA
+        script: |
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
     artifacts:
-      - $HOME/build/*.xcarchive
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:
         auth: integration
